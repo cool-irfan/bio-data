@@ -3,105 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portfolio - Abdul Majid Irfan</title>
+    <title>Biodata of Abdul Majid Irfan</title>
     <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
-            color: #333;
-        }
-        .navbar {
-            display: flex;
-            justify-content: center;
-            background-color: #222;
-            padding: 15px 0;
-        }
-        .navbar a {
-            color: white;
-            text-decoration: none;
-            padding: 14px 20px;
-            font-size: 18px;
-        }
-        .navbar a:hover {
-            background-color: #575757;
-            border-radius: 5px;
-        }
-        .container {
-            max-width: 900px;
-            margin: 40px auto;
-            background: white;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        }
-        .header {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            padding-bottom: 20px;
-            border-bottom: 3px solid #ccc;
-        }
-        .header img {
-            width: 150px;
-            height: 150px;
-            object-fit: cover;
-            border-radius: 50%;
-            border: 4px solid #444;
-        }
-        .header h1 {
-            margin: 0;
-            font-size: 28px;
-            color: #222;
-        }
-        .header p {
-            font-size: 16px;
-            color: #666;
-            margin: 5px 0;
-        }
-        .section {
-            background: #fff;
-            padding: 15px 20px;
-            margin-top: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        }
-        .section h2 {
-            color: #222;
-            border-bottom: 2px solid #ddd;
-            padding-bottom: 5px;
-        }
-        .info {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 8px;
-        }
-        .info strong {
-            font-size: 16px;
-            color: #333;
-            width: 180px;
-            display: inline-block;
-        }
-        .info span {
-            font-size: 16px;
-            color: #666;
-        }
-        .icon {
-            width: 20px;
-            height: 20px;
-        }
+        body { font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f8f9fa; color: #333; }
+        .navbar { background-color: #222; text-align: center; padding: 15px 0; }
+        .navbar a { color: white; text-decoration: none; padding: 14px 20px; font-size: 18px; }
+        .navbar a:hover { background-color: #575757; border-radius: 5px; }
+        .container { max-width: 800px; margin: 20px auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); }
+        
+        .header { display: flex; align-items: center; text-align: left; gap: 20px; padding-bottom: 20px; border-bottom: 2px solid #ddd; }
+        .header img { width: 120px; height: 120px; border-radius: 50%; border: 3px solid #444; }
+        .header div { flex-grow: 1; }
+        .header h1 { margin: 0; color: #222; }
+        .header p { margin: 5px 0; color: #555; font-size: 16px; }
+
+        .quote { font-style: italic; color: #006400; font-size: 18px; margin-top: 10px; text-align: center; }
+
+        .section { margin-top: 20px; padding-bottom: 10px; }
+        .section h2 { border-bottom: 2px solid #333; padding-bottom: 5px; font-size: 22px; }
+        .info p { margin: 8px 0; font-size: 16px; }
+        .info strong { color: #222; }
     </style>
 </head>
 <body>
+
     <div class="navbar">
-        <a href="biodata.html">Portfolio</a>
+        <a href="biodata.html">Biodata</a>
         <a href="photo-gallery.html">Photo Gallery</a>
     </div>
 
     <div class="container">
-        <!-- Profile Header -->
+        
+        <!-- Header with Profile Image and Basic Info -->
         <div class="header">
             <img src="images/profile.jpg" alt="Profile Photo">
             <div>
@@ -111,51 +44,46 @@
             </div>
         </div>
 
+        <!-- Quranic Verse -->
+        <p class="quote">"And We created you in pairs." <br> (Quran 78:8)</p>
+
         <!-- Personal Information -->
         <div class="section">
             <h2>Personal Information</h2>
-            <div class="info"><strong>Name:</strong> <span>Abdul Majid Irfan</span></div>
-            <div class="info"><strong>Occupation:</strong> <span>Software Developer</span></div>
-            <div class="info"><strong>Company:</strong> <span>Magnetism Tech Limited</span></div>
-            <div class="info"><strong>Date of Birth:</strong> <span>15 December 1991</span></div>
-            <div class="info"><strong>Nationality:</strong> <span>Bangladeshi</span></div>
-            <div class="info"><strong>Religion:</strong> <span>Islam (Sunni)</span></div>
-            <div class="info"><strong>Address:</strong> <span>Sayed Shah Mazar Bari, Chattogram</span></div>
-            <div class="info"><strong>Contact:</strong> <span>01837604100</span></div>
+            <div class="info">
+                <p><strong>Name:</strong> Abdul Majid Irfan</p>
+                <p><strong>Present Occupation:</strong> Software Developer, Magnetism Tech Limited</p>
+                <p><strong>Address:</strong> Sayed Shah Mazar Bari, 30 Kazir Dewry 2nd Lane, Kotwali, GPO-4000, Chattogram</p>
+                <p><strong>Date of Birth:</strong> 15 December 1991</p>
+                <p><strong>Nationality:</strong> Bangladeshi</p>
+                <p><strong>Religion:</strong> Islam (Sunni)</p>
+                <p><strong>Contact:</strong> 01837604100</p>
+            </div>
         </div>
 
         <!-- Education -->
         <div class="section">
             <h2>Education</h2>
-            <div class="info"><strong>SSC (2008):</strong> <span>Chittagong Board</span></div>
-            <div class="info"><strong>HSC (2010):</strong> <span>Chittagong Board</span></div>
-            <div class="info"><strong>BBA (2014):</strong> <span>Major in Accounting, National University</span></div>
-            <div class="info"><strong>MBA (2015):</strong> <span>Major in Accounting, National University</span></div>
-            <div class="info"><strong>Diploma (2022):</strong> <span>Web Application Development, IDB</span></div>
-        </div>
-
-        <!-- Skills -->
-        <div class="section">
-            <h2>Skills</h2>
-            <div class="info"><strong>Programming Languages:</strong> <span>JavaScript, Python, PHP</span></div>
-            <div class="info"><strong>Frameworks:</strong> <span>React, Node.js, Laravel</span></div>
-            <div class="info"><strong>Database:</strong> <span>MySQL, MongoDB</span></div>
-            <div class="info"><strong>Other:</strong> <span>REST API, Git, AWS</span></div>
-        </div>
-
-        <!-- Work Experience -->
-        <div class="section">
-            <h2>Work Experience</h2>
-            <div class="info"><strong>Software Developer:</strong> <span>Magnetism Tech Limited (Present)</span></div>
+            <div class="info">
+                <p><strong>SSC (2008):</strong> Chittagong Board</p>
+                <p><strong>HSC (2010):</strong> Chittagong Board</p>
+                <p><strong>BBA (2014):</strong> Major in Accounting, National University</p>
+                <p><strong>MBA (2015):</strong> Major in Accounting, National University</p>
+                <p><strong>Diploma (2022):</strong> Web Application Development, Islamic Development Bank</p>
+            </div>
         </div>
 
         <!-- Family Details -->
         <div class="section">
             <h2>Family Details</h2>
-            <div class="info"><strong>Father:</strong> <span>Md. Abdul Alim (Businessman)</span></div>
-            <div class="info"><strong>Mother:</strong> <span>Jahanara Begum (Housewife)</span></div>
-            <div class="info"><strong>Sibling:</strong> <span>Md. Abdul Aziz (Instructor)</span></div>
+            <div class="info">
+                <p><strong>Father's Name:</strong> Md. Abdul Alim (Businessman)</p>
+                <p><strong>Mother's Name:</strong> Jahanara Begum (Housewife)</p>
+                <p><strong>Siblings:</strong> One younger brother, Md. Abdul Aziz (Instructor)</p>
+            </div>
         </div>
+
     </div>
+
 </body>
 </html>
