@@ -14,18 +14,19 @@
         }
         .navbar {
             display: flex;
-            justify-content: center;
-            background-color: #222;
-            padding: 15px 0;
-            flex-wrap: nowrap; /* Ensures links stay in a row */
-    overflow-x: auto;  /* Allows scrolling if links exceed screen width */
-    white-space: nowrap; /* Prevents links from breaking into new lines */
+    justify-content: center;
+    align-items: center;
+    background-color: #222;
+    padding: 10px 0;
+    gap: 15px; /* Space between links */
+    flex-wrap: wrap; /* Ensures items stay in one row */
         }
         .navbar a {
             color: white;
-            text-decoration: none;
-            padding: 14px 20px;
-            font-size: 18px;
+    text-decoration: none;
+    padding: 10px 15px;
+    font-size: 16px;
+    white-space: nowrap; /* Prevents text wrapping */
         }
         .navbar a:hover {
             background-color: #575757;
