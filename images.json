@@ -1,6 +1,5 @@
 {
     "images": [
-        "photo1.jpg",
          "photo2.jpg",
          "photo3.jpeg",
          "photo4.jpeg",
@@ -18,6 +17,7 @@
          "photo16.jpeg",
          "photo17.jpeg",
          "photo18.jpeg",
-         "photo19.jpeg"
+         "photo19.jpeg",
+         "photo20.jpg"
     ]
 }
