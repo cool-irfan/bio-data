@@ -17,6 +17,9 @@
             justify-content: center;
             background-color: #222;
             padding: 15px 0;
+            flex-wrap: nowrap; /* Ensures links stay in a row */
+    overflow-x: auto;  /* Allows scrolling if links exceed screen width */
+    white-space: nowrap; /* Prevents links from breaking into new lines */
         }
         .navbar a {
             color: white;
