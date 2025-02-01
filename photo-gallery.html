@@ -5,15 +5,71 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Photo Gallery</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f4f4f4; }
-        .navbar { display: flex; justify-content: center; background-color: #222; padding: 15px 0; }
-        .navbar a { color: white; text-decoration: none; padding: 14px 20px; font-size: 18px; }
-        .navbar a:hover { background-color: #575757; border-radius: 5px; }
-        .container { max-width: 1200px; margin: auto; padding: 20px; text-align: center; }
-        h1 { color: #333; }
-        .gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; padding: 20px; }
-        .gallery img { width: 100%; height: 200px; object-fit: cover; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); transition: transform 0.3s; }
-        .gallery img:hover { transform: scale(1.05); }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .navbar {
+            display: flex;
+            justify-content: center;
+            background-color: #222;
+            padding: 15px 0;
+        }
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            padding: 14px 20px;
+            font-size: 18px;
+        }
+        .navbar a:hover {
+            background-color: #575757;
+            border-radius: 5px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            padding: 20px;
+            text-align: center;
+        }
+        h1 {
+            color: #333;
+        }
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            padding: 20px;
+        }
+        .gallery img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+            cursor: pointer;
+        }
+        .gallery img:hover {
+            transform: scale(1.05);
+        }
+        .lightbox {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+        .lightbox img {
+            max-width: 90%;
+            max-height: 90%;
+            border-radius: 10px;
+        }
     </style>
 </head>
 <body>
@@ -27,8 +83,15 @@
         <div class="gallery" id="gallery"></div>
     </div>
 
+    <div class="lightbox" id="lightbox">
+        <img id="lightbox-img" src="" alt="Large Image">
+    </div>
+
     <script>
         const galleryDiv = document.getElementById('gallery');
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImg = document.getElementById('lightbox-img');
+
         fetch('images.json')
             .then(response => response.json())
             .then(data => {
@@ -36,10 +99,19 @@
                     const imgElement = document.createElement('img');
                     imgElement.src = 'images/' + image;
                     imgElement.alt = image;
+                    imgElement.onerror = () => imgElement.src = 'images/placeholder.jpg';
+                    imgElement.addEventListener('click', () => {
+                        lightbox.style.display = 'flex';
+                        lightboxImg.src = imgElement.src;
+                    });
                     galleryDiv.appendChild(imgElement);
                 });
             })
             .catch(error => console.error('Error loading images:', error));
+
+        lightbox.addEventListener('click', () => {
+            lightbox.style.display = 'none';
+        });
     </script>
 </body>
 </html>
