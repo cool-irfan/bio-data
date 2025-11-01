@@ -54,19 +54,70 @@ class AuthManager {
         fetch('auth-config.js')
             .then(response => response.text())
             .then(content => {
-                // Extract AUTH_TOKENS object from the file
-                // This regex matches the object definition
-                const tokensMatch = content.match(/const AUTH_TOKENS = (\{[\s\S]*?\});/);
-                
-                if (!tokensMatch) {
-                    callback(false, 'Token configuration file error');
-                    return;
-                }
-
                 try {
-                    // Evaluate the tokens object (safe since it's our own config file)
-                    const tokensObj = eval(tokensMatch[1]);
+                    // Extract AUTH_TOKENS object using a more robust approach
+                    // First, try to find the object definition
+                    const objStart = content.indexOf('const AUTH_TOKENS = {');
+                    if (objStart === -1) {
+                        callback(false, 'Token configuration error - AUTH_TOKENS not found');
+                        return;
+                    }
+                    
+                    // Find the opening brace
+                    const braceStart = content.indexOf('{', objStart);
+                    if (braceStart === -1) {
+                        callback(false, 'Token configuration error - object not found');
+                        return;
+                    }
+                    
+                    // Find the matching closing brace
+                    let braceCount = 0;
+                    let inString = false;
+                    let stringChar = '';
+                    let objEnd = undefined;
+                    
+                    for (let i = braceStart; i < content.length; i++) {
+                        const char = content[i];
+                        const prevChar = i > 0 ? content[i - 1] : '';
+                        
+                        // Handle string literals
+                        if (!inString && (char === '"' || char === "'")) {
+                            inString = true;
+                            stringChar = char;
+                        } else if (inString && char === stringChar && prevChar !== '\\') {
+                            inString = false;
+                            stringChar = '';
+                        }
+                        
+                        // Count braces only when not in string
+                        if (!inString) {
+                            if (char === '{') {
+                                braceCount++;
+                            } else if (char === '}') {
+                                braceCount--;
+                                if (braceCount === 0) {
+                                    objEnd = i + 1;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    
+                    // Check if we found the closing brace
+                    if (braceCount !== 0 || objEnd === undefined) {
+                        callback(false, 'Token configuration error - incomplete object definition');
+                        return;
+                    }
+                    
+                    // Extract and evaluate the object
+                    const objStr = content.substring(braceStart, objEnd);
+                    const tokensObj = eval('(' + objStr + ')');
                     const tokenValue = token.trim();
+                    
+                    if (!tokensObj || typeof tokensObj !== 'object') {
+                        callback(false, 'Token configuration error - invalid format');
+                        return;
+                    }
                     
                     // Check if token exists and get its identifier
                     const tokenIdentifier = tokensObj[tokenValue];
@@ -95,12 +146,12 @@ class AuthManager {
                     }
                 } catch (error) {
                     console.error('Error parsing tokens:', error);
-                    callback(false, 'Token configuration error');
+                    callback(false, 'Token configuration error: ' + error.message);
                 }
             })
             .catch(error => {
                 console.error('Error loading token config:', error);
-                callback(false, 'Configuration error');
+                callback(false, 'Configuration error: ' + error.message);
             });
     }
 
