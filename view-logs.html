@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Access Logs</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .controls {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        button {
+            padding: 10px 20px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        button:hover {
+            background: #5568d3;
+        }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .stat-card {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .stat-label {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            font-size: 13px;
+        }
+        th, td {
+            padding: 10px 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        @media (max-width: 1200px) {
+            table {
+                font-size: 11px;
+            }
+            th, td {
+                padding: 8px 4px;
+            }
+        }
+        th {
+            background-color: #667eea;
+            color: white;
+            font-weight: 600;
+        }
+        tr:hover {
+            background-color: #f8f9fa;
+        }
+        .token {
+            font-family: monospace;
+            font-size: 12px;
+            color: #666;
+        }
+        .page {
+            color: #667eea;
+            font-weight: 500;
+        }
+        .error {
+            color: #e74c3c;
+            padding: 20px;
+            text-align: center;
+        }
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar" style="display: flex; justify-content: center; background-color: #222; padding: 15px 0; margin-bottom: 20px;">
+        <a href="biodata.html" style="color: white; text-decoration: none; padding: 14px 20px; font-size: 18px;">Biodata</a>
+        <a href="photo-gallery.html" style="color: white; text-decoration: none; padding: 14px 20px; font-size: 18px;">Photo Gallery</a>
+        <a href="view-logs.html" style="color: white; text-decoration: none; padding: 14px 20px; font-size: 18px; background-color: #667eea; border-radius: 5px;">View Logs</a>
+        <a href="#" id="logoutBtn" style="color: white; text-decoration: none; padding: 10px 15px; font-size: 14px; background-color: #e74c3c; border-radius: 5px;">Logout</a>
+    </div>
+    <div class="container">
+        <h1>📊 Access Logs</h1>
+        
+        <div class="controls">
+            <button onclick="loadLogs()">🔄 Refresh Logs</button>
+            <button onclick="exportLogs()">📥 Export JSON</button>
+        </div>
+
+        <div class="stats" id="stats"></div>
+
+        <div id="content">
+            <div class="loading">Loading logs...</div>
+        </div>
+    </div>
+
+    <script src="auth.js"></script>
+    <script>
+        // Log page access
+        const token = authManager.getFullToken();
+        const tokenIdentifier = localStorage.getItem('biodata_token_id');
+        if (token) {
+            authManager.logAccess(token, tokenIdentifier || 'N/A', 'view-logs.html', true);
+        }
+
+        async function loadLogs() {
+            const contentDiv = document.getElementById('content');
+            contentDiv.innerHTML = '<div class="loading">Loading logs...</div>';
+
+            try {
+                // Get logs from localStorage
+                const logs = authManager.getLogs();
+
+                if (logs.length === 0) {
+                    contentDiv.innerHTML = '<div class="error">No logs found.</div>';
+                    document.getElementById('stats').innerHTML = '';
+                    return;
+                }
+
+                // Calculate stats
+                const uniqueIPs = new Set(logs.map(log => log.ip)).size;
+                const uniqueTokens = new Set(logs.map(log => log.tokenIdentifier || log.token)).size;
+                const uniqueLocations = new Set(logs.map(log => log.location || log.country || 'Unknown').filter(loc => loc !== 'Unknown')).size;
+                const today = new Date().toISOString().split('T')[0];
+                const todayLogs = logs.filter(log => log.timestamp.startsWith(today));
+
+                document.getElementById('stats').innerHTML = `
+                    <div class="stat-card">
+                        <div class="stat-label">Total Accesses</div>
+                        <div class="stat-value">${logs.length}</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Today's Accesses</div>
+                        <div class="stat-value">${todayLogs.length}</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Unique IPs</div>
+                        <div class="stat-value">${uniqueIPs}</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Unique Tokens</div>
+                        <div class="stat-value">${uniqueTokens}</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Locations</div>
+                        <div class="stat-value">${uniqueLocations}</div>
+                    </div>
+                `;
+
+                // Build table
+                let tableHTML = `
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Timestamp</th>
+                                <th>Token ID</th>
+                                <th>IP Address</th>
+                                <th>Location</th>
+                                <th>Coordinates</th>
+                                <th>Page</th>
+                                <th>Success</th>
+                                <th>User Agent</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+
+                logs.forEach(log => {
+                    const date = new Date(log.timestamp);
+                    const formattedDate = date.toLocaleString();
+                    const successBadge = log.success 
+                        ? '<span style="color: #27ae60; font-weight: bold;">✓</span>' 
+                        : '<span style="color: #e74c3c; font-weight: bold;">✗</span>';
+                    
+                    const tokenId = log.tokenIdentifier || log.token || 'N/A';
+                    const location = log.location || (log.country || 'Unknown');
+                    const coordinates = (log.latitude && log.longitude) 
+                        ? `${log.latitude.toFixed(4)}, ${log.longitude.toFixed(4)}` 
+                        : 'N/A';
+                    
+                    tableHTML += `
+                        <tr>
+                            <td>${formattedDate}</td>
+                            <td class="token" style="font-weight: 600; color: #667eea;">${tokenId}</td>
+                            <td>${log.ip}</td>
+                            <td style="font-weight: 500;">${location}</td>
+                            <td style="font-family: monospace; font-size: 11px; color: #666;">${coordinates}</td>
+                            <td class="page">${log.page}</td>
+                            <td>${successBadge}</td>
+                            <td style="font-size: 11px; color: #666;">${log.userAgent.substring(0, 50)}${log.userAgent.length > 50 ? '...' : ''}</td>
+                        </tr>
+                    `;
+                });
+
+                tableHTML += `
+                        </tbody>
+                    </table>
+                `;
+
+                contentDiv.innerHTML = tableHTML;
+            } catch (error) {
+                contentDiv.innerHTML = `<div class="error">Error loading logs: ${error.message}</div>`;
+                document.getElementById('stats').innerHTML = '';
+            }
+        }
+
+        function exportLogs() {
+            try {
+                const logs = authManager.getLogs();
+                const jsonStr = JSON.stringify(logs, null, 2);
+                const blob = new Blob([jsonStr], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `access-logs-${new Date().toISOString().split('T')[0]}.json`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            } catch (error) {
+                alert('Error exporting logs: ' + error.message);
+            }
+        }
+
+        // Logout functionality
+        document.getElementById('logoutBtn').addEventListener('click', (e) => {
+            e.preventDefault();
+            authManager.logout();
+        });
+
+        // Load logs on page load
+        loadLogs();
+
+        // Auto-refresh every 30 seconds
+        setInterval(loadLogs, 30000);
+    </script>
+</body>
+</html>
+
