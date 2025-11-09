@@ -5,7 +5,7 @@
 The authentication system logs every access attempt with the following information:
 - **Token used** (partial for security - first 10 characters)
 - **IP Address** (fetched via ipify.org API)
-- **Page accessed** (biodata.html, photo-gallery.html, etc.)
+- **Page accessed** (personal-profile.html, photo-gallery.html, etc.)
 - **Timestamp** (exact date and time)
 - **Success/Failure** status
 - **User Agent** (browser information)
