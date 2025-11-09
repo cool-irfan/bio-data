@@ -111,6 +111,35 @@
         .nav-button:active {
             transform: translateY(-50%) scale(0.95);
         }
+        .close-button {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            font-size: 28px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            z-index: 1002;
+            color: #333;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            font-weight: bold;
+            line-height: 1;
+        }
+        .close-button:hover {
+            background: rgba(255, 255, 255, 1);
+            transform: scale(1.1);
+            color: #e74c3c;
+        }
+        .close-button:active {
+            transform: scale(0.95);
+        }
         @media (max-width: 768px) {
             .nav-button {
                 width: 40px;
@@ -121,6 +150,13 @@
                 left: 10px;
             }
             .nav-button.next {
+                right: 10px;
+            }
+            .close-button {
+                width: 40px;
+                height: 40px;
+                font-size: 24px;
+                top: 10px;
                 right: 10px;
             }
         }
@@ -139,6 +175,7 @@
 
     <div class="lightbox" id="lightbox">
         <div class="lightbox-content">
+            <button class="close-button" id="close-btn" aria-label="Close">×</button>
             <button class="nav-button prev" id="prev-btn" aria-label="Previous image">◀</button>
             <img id="lightbox-img" src="" alt="Large Image">
             <button class="nav-button next" id="next-btn" aria-label="Next image">▶</button>
@@ -151,6 +188,7 @@
         const lightboxImg = document.getElementById('lightbox-img');
         const prevBtn = document.getElementById('prev-btn');
         const nextBtn = document.getElementById('next-btn');
+        const closeBtn = document.getElementById('close-btn');
         
         let images = [];
         let currentIndex = 0;
@@ -193,6 +231,12 @@
                 });
             })
             .catch(error => console.error('Error loading images:', error));
+
+        // Close button event listener
+        closeBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            lightbox.style.display = 'none';
+        });
 
         // Navigation button event listeners
         nextBtn.addEventListener('click', (e) => {
