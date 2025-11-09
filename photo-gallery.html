@@ -64,11 +64,65 @@
             display: none;
             justify-content: center;
             align-items: center;
+            z-index: 1000;
+        }
+        .lightbox-content {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
         }
         .lightbox img {
             max-width: 90%;
             max-height: 90%;
             border-radius: 10px;
+        }
+        .nav-button {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.8);
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            font-size: 24px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            z-index: 1001;
+            color: #333;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+        .nav-button:hover {
+            background: rgba(255, 255, 255, 1);
+            transform: translateY(-50%) scale(1.1);
+        }
+        .nav-button.prev {
+            left: 20px;
+        }
+        .nav-button.next {
+            right: 20px;
+        }
+        .nav-button:active {
+            transform: translateY(-50%) scale(0.95);
+        }
+        @media (max-width: 768px) {
+            .nav-button {
+                width: 40px;
+                height: 40px;
+                font-size: 20px;
+            }
+            .nav-button.prev {
+                left: 10px;
+            }
+            .nav-button.next {
+                right: 10px;
+            }
         }
     </style>
 </head>
@@ -84,33 +138,91 @@
     </div>
 
     <div class="lightbox" id="lightbox">
-        <img id="lightbox-img" src="" alt="Large Image">
+        <div class="lightbox-content">
+            <button class="nav-button prev" id="prev-btn" aria-label="Previous image">◀</button>
+            <img id="lightbox-img" src="" alt="Large Image">
+            <button class="nav-button next" id="next-btn" aria-label="Next image">▶</button>
+        </div>
     </div>
 
     <script>
         const galleryDiv = document.getElementById('gallery');
         const lightbox = document.getElementById('lightbox');
         const lightboxImg = document.getElementById('lightbox-img');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        
+        let images = [];
+        let currentIndex = 0;
+
+        function showImage(index) {
+            if (images.length === 0) return;
+            currentIndex = index;
+            lightboxImg.src = 'images/' + images[currentIndex];
+        }
+
+        function showNext() {
+            if (images.length === 0) return;
+            // Circular navigation: if at last image, go to first
+            currentIndex = (currentIndex + 1) % images.length;
+            showImage(currentIndex);
+        }
+
+        function showPrev() {
+            if (images.length === 0) return;
+            // Circular navigation: if at first image, go to last
+            currentIndex = (currentIndex - 1 + images.length) % images.length;
+            showImage(currentIndex);
+        }
 
         fetch('images.json')
             .then(response => response.json())
             .then(data => {
-                data.images.forEach(image => {
+                images = data.images;
+                data.images.forEach((image, index) => {
                     const imgElement = document.createElement('img');
                     imgElement.src = 'images/' + image;
                     imgElement.alt = image;
                     imgElement.onerror = () => imgElement.src = 'images/placeholder.jpg';
                     imgElement.addEventListener('click', () => {
+                        currentIndex = index;
                         lightbox.style.display = 'flex';
-                        lightboxImg.src = imgElement.src;
+                        showImage(currentIndex);
                     });
                     galleryDiv.appendChild(imgElement);
                 });
             })
             .catch(error => console.error('Error loading images:', error));
 
-        lightbox.addEventListener('click', () => {
-            lightbox.style.display = 'none';
+        // Navigation button event listeners
+        nextBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            showNext();
+        });
+
+        prevBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            showPrev();
+        });
+
+        // Close lightbox when clicking on background (but not on buttons or image)
+        lightbox.addEventListener('click', (e) => {
+            if (e.target === lightbox || e.target === lightboxImg) {
+                lightbox.style.display = 'none';
+            }
+        });
+
+        // Keyboard navigation support
+        document.addEventListener('keydown', (e) => {
+            if (lightbox.style.display === 'flex') {
+                if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+                    showNext();
+                } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+                    showPrev();
+                } else if (e.key === 'Escape') {
+                    lightbox.style.display = 'none';
+                }
+            }
         });
     </script>
 </body>
