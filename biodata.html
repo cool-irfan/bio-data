@@ -28,23 +28,6 @@
             background-color: #575757;
             border-radius: 5px;
         }
-        .logout-btn {
-            background-color: #e74c3c;
-            padding: 10px 15px;
-            border-radius: 5px;
-            font-size: 14px;
-        }
-        .logout-btn:hover {
-            background-color: #c0392b;
-        }
-        .session-timer {
-            color: #95a5a6;
-            font-size: 12px;
-            padding: 5px 10px;
-            text-align: center;
-            background-color: rgba(255, 255, 255, 0.1);
-            margin-top: 5px;
-        }
        
         .container {
             max-width: 900px;
@@ -147,9 +130,7 @@
     <div class="navbar">
         <a href="biodata.html">Biodata</a>
         <a href="photo-gallery.html">Photo Gallery</a>
-        <a href="#" class="logout-btn" id="logoutBtn">Logout</a>
     </div>
-    <div class="session-timer" id="sessionTimer">Session expires in: <span id="timer">5:00</span></div>
 
     <div class="container">
         <!-- Profile Header -->
@@ -193,25 +174,5 @@
 
         </div>
     </div>
-
-    <script src="auth.js"></script>
-    <script>
-        // Log page access
-        const token = authManager.getFullToken();
-        const tokenIdentifier = localStorage.getItem('biodata_token_id');
-        if (token) {
-            authManager.logAccess(token, tokenIdentifier || 'N/A', 'biodata.html', true);
-        }
-
-        // Logout functionality
-        document.getElementById('logoutBtn').addEventListener('click', (e) => {
-            e.preventDefault();
-            authManager.logout();
-        });
-
-        // Start session timer
-        authManager.startSessionTimer();
-        authManager.updateSessionTimer();
-    </script>
 </body>
 </html>

@@ -120,7 +120,6 @@
         <a href="biodata.html" style="color: white; text-decoration: none; padding: 14px 20px; font-size: 18px;">Biodata</a>
         <a href="photo-gallery.html" style="color: white; text-decoration: none; padding: 14px 20px; font-size: 18px;">Photo Gallery</a>
         <a href="view-logs.html" style="color: white; text-decoration: none; padding: 14px 20px; font-size: 18px; background-color: #667eea; border-radius: 5px;">View Logs</a>
-        <a href="#" id="logoutBtn" style="color: white; text-decoration: none; padding: 10px 15px; font-size: 14px; background-color: #e74c3c; border-radius: 5px;">Logout</a>
     </div>
     <div class="container">
         <h1>📊 Access Logs</h1>
@@ -137,22 +136,15 @@
         </div>
     </div>
 
-    <script src="auth.js"></script>
     <script>
-        // Log page access
-        const token = authManager.getFullToken();
-        const tokenIdentifier = localStorage.getItem('biodata_token_id');
-        if (token) {
-            authManager.logAccess(token, tokenIdentifier || 'N/A', 'view-logs.html', true);
-        }
-
         async function loadLogs() {
             const contentDiv = document.getElementById('content');
             contentDiv.innerHTML = '<div class="loading">Loading logs...</div>';
 
             try {
-                // Get logs from localStorage
-                const logs = authManager.getLogs();
+                // Get logs from localStorage (if any exist from previous sessions)
+                const logsStr = localStorage.getItem('biodata_access_logs');
+                const logs = logsStr ? JSON.parse(logsStr) : [];
 
                 if (logs.length === 0) {
                     contentDiv.innerHTML = '<div class="error">No logs found.</div>';
@@ -249,7 +241,8 @@
 
         function exportLogs() {
             try {
-                const logs = authManager.getLogs();
+                const logsStr = localStorage.getItem('biodata_access_logs');
+                const logs = logsStr ? JSON.parse(logsStr) : [];
                 const jsonStr = JSON.stringify(logs, null, 2);
                 const blob = new Blob([jsonStr], { type: 'application/json' });
                 const url = URL.createObjectURL(blob);
@@ -264,12 +257,6 @@
                 alert('Error exporting logs: ' + error.message);
             }
         }
-
-        // Logout functionality
-        document.getElementById('logoutBtn').addEventListener('click', (e) => {
-            e.preventDefault();
-            authManager.logout();
-        });
 
         // Load logs on page load
         loadLogs();
